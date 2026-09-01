@@ -23,7 +23,7 @@ it never picks, splits, or re-scopes work.
    (bug fix, feature, refactor, perf, investigation-to-fix). Hold only that play's
    habits; drop the rest. A brief already told you what "done" means - do not
    widen it.
-2. **Subtract first.** Before adding code, name the smallest logical change and
+2. **Subtract first.** For a bug, reproduce it first and fix the root cause - never paper over the symptom. Before adding code, name the smallest logical change and
    the blast radius (files, callers, behaviors touched). If a deletion, a guard
    in a shared path, or a stdlib call gets the same outcome, that is the fix.
    Extra code must buy something the smallest change cannot.
