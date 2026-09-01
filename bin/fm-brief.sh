@@ -460,6 +460,9 @@ For anything the codebase already shows, prefer a pointer to the authoritative f
 If you touch a project \`AGENTS.md\` that lacks \`## Maintaining this file\`, add that short self-governance section from \`$FM_ROOT/bin/fm-ensure-agents-md.sh\` in the same pass.
 Keep it proportionate: skip \`AGENTS.md\` edits for trivial tasks that produced no durable project knowledge.
 
+# Inner loop
+Before writing code, read and follow \`$FM_ROOT/.agents/skills/pstack-inner-loop/SKILL.md\` - smallest change, proven artifact; no second router, no extra review pass.
+
 $DOD
 EOF
 echo "scaffolded: $BRIEF (ship, mode=$MODE; replace {TASK})"
