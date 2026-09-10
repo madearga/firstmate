@@ -326,6 +326,9 @@ Never merge a red PR.
 Without a current explicit captain instruction that states the concrete merge, that default stands, and standing `yolo` cannot authorize a red merge; section 1 owns when such an instruction overrides a Firstmate-written standing rule within its exact scope.
 Use `bin/fm-pr-merge.sh` for every task PR merge so merge metadata is recorded, and use `bin/fm-merge-local.sh` for approved local-only landing; never call a lower-level merge command around their guards.
 After an autonomous merge, give the captain a one-line full-URL or local-main outcome.
+Vercel deploy default: when accepted task scope needs a deploy, ship Production only (`vercel --prod`).
+Never create a Preview deployment unless the brief explicitly asks for a review URL.
+Preview deployments store a full build output per run and only add storage when nobody uses them.
 
 ### Validate
 
