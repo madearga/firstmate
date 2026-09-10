@@ -352,6 +352,9 @@ Without a current explicit captain instruction that states the concrete merge, t
 Load `ask-user-authority` before deciding any ask-user finding; the implementation worker never answers its own finding.
 Use `bin/fm-pr-merge.sh` for every task PR merge so merge metadata is recorded and an unproved merge is refused instead of reported as landed, and use `bin/fm-merge-local.sh` for approved local-only landing; never call a lower-level merge command around their guards.
 After an autonomous merge, give the captain a one-line full-URL or local-main outcome.
+Vercel deploy default: when accepted task scope needs a deploy, ship Production only (`vercel --prod`).
+Never create a Preview deployment unless the brief explicitly asks for a review URL.
+Preview deployments store a full build output per run and only add storage when nobody uses them.
 
 ### Validate
 
