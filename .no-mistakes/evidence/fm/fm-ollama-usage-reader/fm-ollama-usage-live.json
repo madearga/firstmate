@@ -1,0 +1,47 @@
+{
+  "bin": "fm-ollama-usage.sh",
+  "credential": {
+    "source": "/Users/madearga/.pi/agent/auth.json ollama-cloud"
+  },
+  "description": "Report ollama-cloud session and weekly usage for routing-aware agents",
+  "generatedAt": "2026-09-16T18:38:40.143443Z",
+  "limits": {
+    "session": {
+      "models": [
+        {
+          "name": "deepseek-v4.1-flash",
+          "request_count": 159
+        },
+        {
+          "name": "deepseek-v4-flash:0731",
+          "request_count": 69
+        }
+      ],
+      "usage": 0.107,
+      "usagePercent": 10.7
+    },
+    "weekly": {
+      "models": [
+        {
+          "name": "deepseek-v4.1-flash",
+          "request_count": 811
+        },
+        {
+          "name": "deepseek-v4-flash:0731",
+          "request_count": 199
+        },
+        {
+          "name": "minimax-m3",
+          "request_count": 28
+        },
+        {
+          "name": "web search",
+          "request_count": 2
+        }
+      ],
+      "usage": 0.121,
+      "usagePercent": 12.1
+    }
+  },
+  "schema": "fm-ollama-usage.v1"
+}

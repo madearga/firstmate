@@ -1,0 +1,18 @@
+bin: fm-ollama-usage.sh
+description: Report ollama-cloud session and weekly usage for routing-aware agents
+generatedAt: "2026-09-16T18:38:41.633861Z"
+credential: /Users/madearga/.pi/agent/auth.json ollama-cloud
+limits[2]{window,usage,usagePercent}:
+  session,0.107,10.7
+  weekly,0.121,12.1
+models[6]{window,model,request_count}:
+  session,deepseek-v4.1-flash,159
+  session,deepseek-v4-flash:0731,69
+  weekly,deepseek-v4.1-flash,811
+  weekly,deepseek-v4-flash:0731,199
+  weekly,minimax-m3,28
+  weekly,web search,2
+help[3]:
+  Bridge: retires when quota-axi ships provider ollama (issue kunchenguid/quota-axi#86, PR kunchenguid/quota-axi#169).
+  Payload has no reset timestamp: this reports fraction used, not recovery time.
+  Run `fm-ollama-usage.sh --json` for the stable machine schema.
