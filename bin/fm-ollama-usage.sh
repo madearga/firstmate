@@ -13,10 +13,11 @@
 #   fm-ollama-usage.sh             print the TOON usage block
 #   fm-ollama-usage.sh --json      print the stable machine JSON
 #
-# Credentials follow the upstream provider contract exactly, in order:
-#   1. the OLLAMA_API_KEY environment variable
-#   2. the `ollama-cloud` api_key entry in $PI_CODING_AGENT_DIR/auth.json
+# Credentials follow the upstream provider contract exactly, in order
+# (issue kunchenguid/quota-axi#86):
+#   1. the `ollama-cloud` api_key entry in $PI_CODING_AGENT_DIR/auth.json
 #      (default ~/.pi/agent/auth.json), of shape {"type":"api_key","key":...}
+#   2. the OLLAMA_API_KEY environment variable
 # The Pi auth store is the only file-based source.
 # ~/.pi/agent/models.json is deliberately never read, so this bridge cannot
 # teach the fleet a non-standard credential source.
@@ -52,14 +53,10 @@ done
 
 KEY=
 CREDENTIAL_SOURCE=
-if [ -n "${OLLAMA_API_KEY:-}" ]; then
-  KEY=$OLLAMA_API_KEY
-  CREDENTIAL_SOURCE='env OLLAMA_API_KEY'
-else
-  AUTH_DIR=${PI_CODING_AGENT_DIR:-"$HOME/.pi/agent"}
-  AUTH_FILE="$AUTH_DIR/auth.json"
-  if [ -f "$AUTH_FILE" ]; then
-    KEY=$(python3 - "$AUTH_FILE" 2>/dev/null <<'PY' || true
+AUTH_DIR=${PI_CODING_AGENT_DIR:-"$HOME/.pi/agent"}
+AUTH_FILE="$AUTH_DIR/auth.json"
+if [ -f "$AUTH_FILE" ]; then
+  KEY=$(python3 - "$AUTH_FILE" 2>/dev/null <<'PY' || true
 import json
 import sys
 
@@ -74,13 +71,16 @@ try:
 except Exception:
     pass
 PY
-    )
-    if [ -n "$KEY" ]; then
-      CREDENTIAL_SOURCE="$AUTH_FILE ollama-cloud"
-    fi
+  )
+  if [ -n "$KEY" ]; then
+    CREDENTIAL_SOURCE="$AUTH_FILE ollama-cloud"
   fi
 fi
-[ -n "$KEY" ] || die "no ollama-usage credential (set OLLAMA_API_KEY or add an ollama-cloud api_key entry to the Pi auth store)"
+if [ -z "$KEY" ] && [ -n "${OLLAMA_API_KEY:-}" ]; then
+  KEY=$OLLAMA_API_KEY
+  CREDENTIAL_SOURCE='env OLLAMA_API_KEY'
+fi
+[ -n "$KEY" ] || die "no ollama-usage credential (add an ollama-cloud api_key entry to the Pi auth store or set OLLAMA_API_KEY)"
 
 TMP=$(mktemp "${TMPDIR:-/tmp}/fm-ollama-usage.XXXXXX") || die "cannot create a temp file"
 trap 'rm -f "$TMP"' EXIT

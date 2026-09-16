@@ -82,9 +82,11 @@ run_script() {
   cat "$TMP_ROOT/$name.out" "$TMP_ROOT/$name.err"
 }
 
-test_env_credential_toon() {
+test_store_wins_over_env_toon() {
+  # Both sources hold DIFFERENT keys; the auth store must win (issue
+  # kunchenguid/quota-axi#86), so the store key is the bearer token.
   local output
-  output=$(run_script env-toon)
+  output=$(run_script store-wins)
   assert_contains "$output" "limits[2]{window,usage,usagePercent}:" "TOON omitted the limits header"
   assert_contains "$output" "  session,0.062,6.2" "TOON session row wrong"
   assert_contains "$output" "  weekly,0.114,11.4" "TOON weekly row wrong"
@@ -92,18 +94,37 @@ test_env_credential_toon() {
   assert_contains "$output" "  session,deepseek-v4.1-flash,73" "TOON session model row wrong"
   assert_contains "$output" "  weekly,minimax-m3,28" "TOON weekly model row wrong"
   assert_contains "$output" "  weekly,web search,2" "TOON spaced model row wrong"
-  assert_contains "$output" "credential: env OLLAMA_API_KEY" "TOON did not name the env credential"
+  assert_contains "$output" "credential: $AUTH_FILE ollama-cloud" \
+    "TOON did not name the auth-store credential"
   assert_contains "$output" "Bridge: retires when quota-axi ships provider ollama" \
     "TOON omitted the retirement condition"
-  assert_equals "" "$(cat "$TMP_ROOT/env-toon.err")" "env credential run wrote to stderr"
-  assert_equals 1 "$(wc -l < "$TMP_ROOT/env-toon.urls" | tr -d ' ')" "env credential run made more than one request"
-  assert_grep 'https://ollama.com/api/usage' "$TMP_ROOT/env-toon.urls" \
-    "env credential run requested the wrong URL"
-  assert_grep "Authorization: Bearer $ENV_KEY" "$TMP_ROOT/env-toon.headers" \
-    "env credential did not win over the auth store"
-  assert_not_contains "$output" "$STORE_KEY" "env credential run leaked the store key"
-  assert_not_contains "$output" "$ENV_KEY" "env credential run leaked the api key"
-  pass "env credential renders the full TOON block from one bounded request"
+  assert_equals "" "$(cat "$TMP_ROOT/store-wins.err")" "store-wins run wrote to stderr"
+  assert_equals 1 "$(wc -l < "$TMP_ROOT/store-wins.urls" | tr -d ' ')" "store-wins run made more than one request"
+  assert_grep 'https://ollama.com/api/usage' "$TMP_ROOT/store-wins.urls" \
+    "store-wins run requested the wrong URL"
+  assert_grep "Authorization: Bearer $STORE_KEY" "$TMP_ROOT/store-wins.headers" \
+    "auth store did not win over the env credential"
+  assert_no_grep "Authorization: Bearer $ENV_KEY" "$TMP_ROOT/store-wins.headers" \
+    "env credential was sent despite the auth-store key"
+  assert_not_contains "$output" "$STORE_KEY" "store-wins run leaked the store key"
+  assert_not_contains "$output" "$ENV_KEY" "store-wins run leaked the env key"
+  pass "auth store outranks a differing env key and renders the full TOON block"
+}
+
+test_env_fallback_toon() {
+  # No ollama-cloud entry in the auth store, so OLLAMA_API_KEY is the fallback.
+  local output
+  output=$(run_script env-fallback PI_CODING_AGENT_DIR="$EMPTY_DIR")
+  assert_contains "$output" "credential: env OLLAMA_API_KEY" \
+    "TOON did not name the env credential"
+  assert_grep "Authorization: Bearer $ENV_KEY" "$TMP_ROOT/env-fallback.headers" \
+    "env fallback did not send the env key as the bearer token"
+  assert_no_grep "Authorization: Bearer $STORE_KEY" "$TMP_ROOT/env-fallback.headers" \
+    "store key was sent with no auth-store entry"
+  assert_equals 1 "$(wc -l < "$TMP_ROOT/env-fallback.urls" | tr -d ' ')" \
+    "env fallback run made more than one request"
+  assert_not_contains "$output" "$ENV_KEY" "env fallback run leaked the api key"
+  pass "env credential is the fallback when the auth store has no ollama-cloud entry"
 }
 
 test_store_credential_json() {
@@ -195,7 +216,8 @@ test_help() {
   pass "help renders only the complete header"
 }
 
-test_env_credential_toon
+test_store_wins_over_env_toon
+test_env_fallback_toon
 test_store_credential_json
 test_missing_credential
 test_http_error
