@@ -157,6 +157,10 @@
       "audience": "agent-runtime"
     },
     {
+      "path": ".agents/skills/handoff/SKILL.md",
+      "audience": "agent-runtime"
+    },
+    {
       "path": ".agents/skills/harness-adapters/SKILL.md",
       "audience": "agent-runtime"
     },
@@ -237,6 +241,10 @@
       "audience": "agent-runtime"
     },
     {
+      "path": ".agents/skills/pstack-inner-loop/SKILL.md",
+      "audience": "agent-runtime"
+    },
+    {
       "path": ".agents/skills/quiet/SKILL.md",
       "audience": "agent-runtime"
     },
@@ -283,6 +291,10 @@
     {
       "path": "README.md",
       "audience": "public-product"
+    },
+    {
+      "path": "VENT.md",
+      "audience": "agent-runtime"
     },
     {
       "path": "VISION.md",
