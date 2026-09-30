@@ -687,6 +687,11 @@ fm_backlog_record_parent_authorized() {  # <path> <label> <root> [parent-only]
 fm_backlog_record_present() {
   local path=$1 label=${2:-record} root=$3
   fm_backlog_record_parent_authorized "$path" "$label" "$root" || return 1
+  # A record absent from this home is usually another home's record, not corruption.
+  if [ ! -e "$path" ] && [ ! -L "$path" ]; then
+    FM_BACKLOG_TRANSITION_ERROR="$label is missing at $path"
+    return 1
+  fi
   if [ ! -f "$path" ]; then
     FM_BACKLOG_TRANSITION_ERROR="$label is not a regular file at $path"
     return 1
