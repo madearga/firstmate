@@ -1,0 +1,2 @@
+ok - refused teardown leaves the backlog item in flight
+ok - record-presence refusals separate a missing record from a non-regular one

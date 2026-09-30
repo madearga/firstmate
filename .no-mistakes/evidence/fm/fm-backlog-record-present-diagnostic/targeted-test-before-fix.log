@@ -1,0 +1,3 @@
+not ok - a record absent from this home was not reported as missing (missing: 'task record is missing at')
+--- output ---
+error: teardown refused: task record is not a regular file at /private/var/folders/xj/dg5lsw2n4x365v48r56jdhdh0000gn/T/fm-backlog-atomicity.qyhmgA/record-present-split/home/state/atomic-record-present-split-b16.meta

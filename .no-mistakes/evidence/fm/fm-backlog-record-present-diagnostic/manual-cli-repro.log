@@ -1,0 +1,11 @@
+=== AFTER FIX (d323c64) ===
+teardown exit: 1
+teardown message: error: teardown refused: task record is missing at /private/var/folders/xj/dg5lsw2n4x365v48r56jdhdh0000gn/T/fm-backlog-atomicity.bzGCWY/manual-missing-cross-home/home/state/manual-meta-gone.meta
+backlog row state after refusal: in_flight
+record recreated: no
+
+=== BEFORE FIX (1d1e752) ===
+teardown exit: 1
+teardown message: error: teardown refused: task record is not a regular file at /private/var/folders/xj/dg5lsw2n4x365v48r56jdhdh0000gn/T/fm-backlog-atomicity.JSFwey/manual-missing-cross-home/home/state/manual-meta-gone.meta
+backlog row state after refusal: in_flight
+record recreated: no
