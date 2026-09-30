@@ -1,0 +1,44 @@
+=== BEFORE: main home backlog ===
+## In flight
+- [ ] live-task - active work (repo: alpha, since 2026-06-20)
+
+## Queued
+- [ ] bug-z - fix bug z (repo: gamma)
+
+## Done
+- [x] old-task - shipped thing - local main (merged 2026-06-19)
+
+=== CASE 1: hand off an In-flight item (skill says: refused, stays here) ===
+helper exit=1
+error: refusing to hand off in-flight backlog items: live-task
+       nothing was moved.
+RESULT: main backlog unchanged (in-flight item stayed): OK
+RESULT: nothing copied to the secondmate home: OK
+
+=== CASE 2: hand off the Queued item (skill says: moved) ===
+helper exit=0
+handed off 1 item(s) to design: bug-z
+  into /private/var/folders/xj/dg5lsw2n4x365v48r56jdhdh0000gn/T/fm-handoff-demo.5pkKgR/sub/data/backlog.md
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+●  WATCHER DOWN - SUPERVISION IS OFF
+●  1 task(s) in flight, but no watcher has a fresh beacon (last beat: never, grace 300s).
+●  Trust the emitted supervision protocol for this harness; do not use shell & for watcher repair.
+●  This is a supervision warning only; the requested message WILL still be sent.
+●  repair a missing or failed watcher cycle with the Pi tool fm_watch_arm_pi, or restart Pi with -e /Users/madearga/.no-mistakes/worktrees/e059dbdcba1e/01M3SBV4YMHDSY616RNJDWA8SC/.pi/extensions/fm-primary-turnend-guard.ts -e /Users/madearga/.no-mistakes/worktrees/e059dbdcba1e/01M3SBV4YMHDSY616RNJDWA8SC/.pi/extensions/fm-primary-pi-watch.ts if the extensions are not loaded.
+●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+=== AFTER: main home backlog (live-task still here, bug-z gone) ===
+## In flight
+- [ ] live-task - active work (repo: alpha, since 2026-06-20)
+
+## Queued
+## Done
+- [x] old-task - shipped thing - local main (merged 2026-06-19)
+
+=== AFTER: secondmate home backlog (bug-z arrived) ===
+## In flight
+
+## Queued
+- [ ] bug-z - fix bug z (repo: gamma)
+
+## Done

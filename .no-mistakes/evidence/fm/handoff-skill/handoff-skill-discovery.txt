@@ -1,0 +1,7 @@
+Real pi harness skill discovery from this worktree (pi --mode rpc, get_commands):
+  discovered skills: 202
+  command name : skill:handoff
+  description  : Move in-flight work to a persistent secondmate home so it keeps running while the captain goes offline. Use when the captain invokes /handoff, asks to hand work off to a secondmate, or says they are going away or shutting the machine down with work still in flight.
+  source       : skill
+  path         : /Users/madearga/.no-mistakes/worktrees/e059dbdcba1e/01M3SBV4YMHDSY616RNJDWA8SC/.agents/skills/handoff/SKILL.md
+  scope        : project
