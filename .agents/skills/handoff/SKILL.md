@@ -16,15 +16,12 @@ The mechanics belong to their existing owners and are never restated here.
 `secondmate-provisioning` owns target-home seeding, clone restrictions, remote-route readiness, inherited-material propagation, and the routing-registry contract.
 `bin/fm-backlog-handoff.sh`'s own header owns the item-transfer command, its flags, and its durability.
 
-## When it loads
-
-Load on `/handoff`, on any captain request to move work to a secondmate, and whenever the captain says they are going away, going offline, or shutting down this machine with work still in flight.
-
 ## Decide what moves before moving anything
 
 Inventory what is in flight, queued, and blocked, then classify each item.
 
-- Work that can continue without the captain moves.
+- Queued work that can continue without the captain moves: the handoff helper transfers `## Queued` items only.
+- An item already `## In flight` stays in this home and is reported as staying: the helper refuses in-flight items, so a live worker's item never moves and the captain is told it remains here.
 - A merge, an approval, or any other captain-owned decision stays: authority does not travel with the work.
 - `local-only` work stays in the main home.
 - Work the target home cannot reach - missing clone, missing registry entry, missing runtime or tooling, or a forge account that host cannot authenticate - waits until that gap is closed or is reported instead of being handed off.
@@ -36,7 +33,7 @@ State plainly what stays behind and why, because a handoff that silently strands
 1. Resolve the target from the captain's own words, or by matching the work against every registered `scope:` in `data/secondmates.md`.
 2. Load `secondmate-provisioning` before touching the target home, its registry, or its clones.
 3. Close the target gaps that the work actually needs: clone, registry line, runtime and tooling prerequisites, and the forge account that must be active on that host for the project's remote.
-4. Move the work through the handoff helper.
+4. Move the queued work through the handoff helper; an item it refuses as `## In flight` stays in this home and is reported under step 6.
 5. Send one routed brief naming the work, the material it must read, the delivery mode, the boundaries it must not cross, and the fact that its reports return as marked replies.
 6. Tell the captain what continues, what goes dormant, and every decision still waiting on him - before he goes offline.
 7. On his return, read the accumulated marked reports and reconcile them into this home.
