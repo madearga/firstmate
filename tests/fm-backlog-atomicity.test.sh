@@ -2915,6 +2915,44 @@ test_refused_teardown_leaves_the_item_live() {
   pass "refused teardown leaves the backlog item in flight"
 }
 
+test_refusal_messages_separate_a_missing_record_from_a_non_regular_one() {
+  local case_dir home id meta out rc=0
+  id=atomic-record-present-split-b16
+  case_dir=$(make_home record-present-split "$id")
+  home=$(home_of "$case_dir")
+  add_item "$case_dir" "$id"
+  out=$(run_ship_spawn "$case_dir" "$id") \
+    || fail "record-present setup spawn failed: $out"
+  meta="$home/state/$id.meta"
+
+  rm -f "$meta"
+  out=$(run_teardown "$case_dir" "$id") || rc=$?
+  [ "$rc" -ne 0 ] || fail "teardown accepted a task with no record in this home"
+  assert_contains "$out" "task record is missing at" \
+    "a record absent from this home was not reported as missing"
+  assert_not_contains "$out" "not a regular file" \
+    "a record absent from this home was reported as a non-regular file"
+  [ "$(row_state "$case_dir" "$id")" = in_flight ] \
+    || fail "missing-record refusal changed the live backlog state"
+  assert_absent "$meta" "missing-record refusal created a task record"
+
+  mkfifo "$meta"
+  rc=0
+  out=$(fm_run_timed 60 env FM_ROOT_OVERRIDE="$ROOT" FM_HOME="$home" \
+    PATH="$case_dir/fakebin:$PATH" \
+    "$TEARDOWN" "$id" 2>&1) || rc=$?
+  [ "$rc" -ne 124 ] || fail "teardown hung reading a special-file task record"
+  [ "$rc" -ne 0 ] || fail "teardown accepted a special-file task record"
+  assert_contains "$out" "task record is not a regular file at" \
+    "a special-file record was not reported as not a regular file"
+  assert_not_contains "$out" "is missing at" \
+    "a special-file record was reported as missing"
+  [ "$(row_state "$case_dir" "$id")" = in_flight ] \
+    || fail "special-file refusal changed the live backlog state"
+  [ -p "$meta" ] || fail "special-file refusal altered the task record"
+  pass "record-presence refusals separate a missing record from a non-regular one"
+}
+
 test_environment_selected_adapter_is_not_forced_to_markdown() {
   local case_dir id out
   id=fm-env-adapter-b15
@@ -3089,6 +3127,7 @@ test_spawn_refuses_a_data_directory_symlinked_outside_the_home
 test_configured_adapter_refuses_a_data_directory_outside_the_home
 test_dispatch_and_completion_are_structural
 test_refused_teardown_leaves_the_item_live
+test_refusal_messages_separate_a_missing_record_from_a_non_regular_one
 test_environment_selected_adapter_is_not_forced_to_markdown
 test_manual_backend_home_dispatches_and_completes_without_touching_the_backlog
 test_a_secondmate_home_keeps_its_own_books
