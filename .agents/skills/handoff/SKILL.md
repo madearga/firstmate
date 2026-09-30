@@ -1,7 +1,7 @@
 ---
 name: handoff
 description: >-
-  Move in-flight work to a persistent secondmate home so it keeps running while the captain goes offline.
+  Move queued work to a persistent secondmate home so it keeps running while the captain goes offline.
   Use when the captain invokes /handoff, asks to hand work off to a secondmate, or says they are going away or shutting the machine down with work still in flight.
 user-invocable: true
 metadata:
@@ -10,7 +10,7 @@ metadata:
 
 # handoff
 
-Move in-flight work to a persistent secondmate home when the captain is about to go offline, so the work continues on the target host instead of dying with this session.
+Move the queued work to a persistent secondmate home when the captain is about to go offline, so it continues on the target host instead of dying with this session.
 This skill owns the captain-facing orchestration only: what moves, where it lands, which target gaps must close first, what the captain must still decide, and what he reads when he returns.
 The mechanics belong to their existing owners and are never restated here.
 `secondmate-provisioning` owns target-home seeding, clone restrictions, remote-route readiness, inherited-material propagation, and the routing-registry contract.
