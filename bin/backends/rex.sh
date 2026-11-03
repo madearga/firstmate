@@ -79,7 +79,7 @@ FM_BACKEND_REX_MIN_API=5
 # client that later views the block takes ownership and applies its own size.
 FM_BACKEND_REX_COLUMNS=${FM_BACKEND_REX_COLUMNS:-200}
 FM_BACKEND_REX_ROWS=${FM_BACKEND_REX_ROWS:-50}
-FM_BACKEND_REX_BUNDLE_BIN="${FM_BACKEND_REX_BUNDLE_BIN:-$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex}"
+FM_BACKEND_REX_BUNDLE_BIN="${FM_BACKEND_REX_BUNDLE_BIN:-${HOME:-}/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex}"
 
 # fm_backend_rex_bin: the running server's own CLI first. Rex exports
 # REX_BIN_DIR into every block and prepends it only for --shell=none commands,
