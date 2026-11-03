@@ -124,8 +124,24 @@ rex_test_stop_server
   || fail "every passive read must disable autostart itself, got:"$'\n'"$(cat "$WORK/calls")"
 pass "real rex: passive reads disable autostart and do not start a stopped server"
 rex_test_start_server || fail "the private Rex server did not recover after restart"
-[ "$(fm_backend_rex_endpoint_absence_recheck "$LIVE" "$ENDPOINT")" = missing ] \
-  || fail "a session lost at server stop must be proven missing after the private server recovers"
-fm_backend_rex_create_task_in_session "$SMOKE_SID" fm-test-after-restart "$WORK" >/dev/null 2>&1
-[ "$?" = 2 ] || fail "reclaim in a session lost at server stop must return 2"
-pass "real rex: after server restart, the recorded session is gone and reclaim creates nothing"
+# Rex builds differ here: older ones drop sessions with the server, newer ones
+# (verified on 0.1.0-preview.12) persist them, so the block comes back present
+# with no agent. Both answers must be proven, never guessed, and neither is
+# allowed to answer `missing` for a block that is still there.
+case "$(fm_backend_rex_block_presence "$LIVE")" in
+  missing)
+    [ "$(fm_backend_rex_endpoint_absence_recheck "$LIVE" "$ENDPOINT")" = missing ] \
+      || fail "a session lost at server stop must be proven missing after the private server recovers"
+    fm_backend_rex_create_task_in_session "$SMOKE_SID" fm-test-after-restart "$WORK" >/dev/null 2>&1
+    [ "$?" = 2 ] || fail "reclaim in a session lost at server stop must return 2"
+    pass "real rex: after server restart, the recorded session is gone and reclaim creates nothing"
+    ;;
+  present)
+    [ "$(fm_backend_rex_endpoint_absence_recheck "$LIVE" "$ENDPOINT")" = dead ] \
+      || fail "a block persisted across server stop must be proven present-but-dead, not missing"
+    pass "real rex: after server restart, a persisted session keeps its block and reads dead, never missing"
+    ;;
+  *)
+    fail "block presence after restart must be present or missing after the private server recovers"
+    ;;
+esac
